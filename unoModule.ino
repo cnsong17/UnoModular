@@ -5,11 +5,12 @@ int pLogicB = 7;
 int pIntClockOut = 10;
 int pExtClockIn = 11;
 int pDivClockOut = 4;
+int pDivider;
 
 //variables
 int interrupt = 1; //digital pin 3
 int index = 0; //index to choose which delayVar value
-int clockDivider = 1; //divider for clock in
+int clockDivider = 0; //divider for clock in
 int delayVar[7] = {400, 500, 600, 700, 800, 900, 0}; //different freq
 int count = 0; //counter for clock
 volatile int state = LOW;
@@ -19,7 +20,6 @@ int logicOperator = (int)random(4);
 int logicA = 0;
 int logicB = 0;
 int logicOut = 0;
-int waitus = 0;
 
 void setup()
 {
@@ -30,6 +30,7 @@ void setup()
   pinMode(pLogicA, INPUT);
   pinMode(pLogicB, INPUT);
   pinMode(pExtClockIn, INPUT);
+  pinMode(pDivider, INPUT);
 
   //other setup
   Serial.begin(9600);
@@ -38,6 +39,10 @@ void setup()
   
 void loop()
 {
+  //clock divider
+  clockDivider = analogRead(pDivider);
+  clockDivider = clockDivider/200; //adjust 
+    
   if (clockHappened && (count == clockDivider)){
     state = !state;
     digitalWrite(pDivClockOut, state);
@@ -63,7 +68,6 @@ void clockPulse()
   else count = 0;
   
   clockHappened = 1;
-  
 }
 
 int logicOp(int a, int b, int op)
